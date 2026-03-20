@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Soundboard</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:#f0f0f0;font-family:Arial,Helvetica,sans-serif;min-height:100vh}
+    header{background:#fff;border-bottom:2px solid #ddd;padding:12px 20px;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-size:1.4rem;font-weight:900;color:#dc3545}
+    .stop-btn{font-size:.72rem;font-weight:bold;text-transform:uppercase;color:#fff;background:#dc3545;border:none;padding:6px 14px;border-radius:4px;cursor:pointer}
+    .stop-btn:hover{background:#b02030}
+
+    #instants_container{margin:30px auto;text-align:center;max-width:970px}
+    .instants{margin:30px 0;display:flex;flex-wrap:wrap;gap:30px 10px;justify-content:center}
+
+    /* ---- exact myinstants layout ---- */
+    .instant{position:relative;vertical-align:top;width:94px;text-align:center;word-wrap:break-word;cursor:pointer}
+
+    .small-button{
+      width:94px;height:89px;
+      position:absolute;top:0;left:0;
+      background:url('data:image/png;base64,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') no-repeat center center;
+      border:0;display:block;
+      -webkit-tap-highlight-color:transparent;
+      cursor:pointer;
+    }
+    .small-button:active{
+      background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF4AAABZCAYAAAC315PWAAAWr0lEQVR4nO2da4xd11XHf57xeMaTScaPsR3HjzgPJ80NIc/e9AFTomqKmKoyD6NGMiIoQInol9ACUj8gPvChRa2gEqpAIEUECKmEI2RoHamGVnUDSieUvpJp6jT25OE48YzjcTz2vH358F+re519z517xxl7EjFLupp7z2Ofvdda+78ee+0zq2q1Git0+altuTvw/5VWGL9MtML4ZaIVxi8TrTB+mWiF8ctEK4xfJlq93B1YJFWanB++LL1YAlrR+GWiFcYvE60wfplo1UquZnloReOXiVYYv0y0wvhlosvN+IHwvQL0Z+er9iG7zo/1U/Tl/Vzu3+fX5W3mzyl7Zk55Xyvhs2haDuPqHY3Bjg98KPzeCZwEpoD7gJuAK4BVQLt9VgE1YB6YA04BbwKPW/su6EPh2cOIiZ0lx/O+VSj2M/+dj6vlAG45Itee7HcVmCAx6hASwMcQs9cDaxGjasAFxOQL9sGOA2xFQugHxoB/Ab5sz7jevmPnttn3StanyLw+69NxO96qEJrS5db4ss5WSZoO8GfArcBGxOxVwCwwY+dd211poiBW2T3nkACuBE4D/wX8q12fa3MFMfhwSX+rQC/QYb9Hwv1VoKvBfU1pORkfNX0vcAPwQTTQNcA4cNTOH0FadyeCn0PW1keAnwF2AOusvQskSJpEgpgHXgL+A3i0pF8+Q8o0uALsQjNvNTAKHAznnBal/csVQPWjgRyw3w8DdyBIOQp8ncRc18rd4fpIrrE9wAPAduQ0nEOa2o6gqBN4Anje2olKEJ/jsBNnYRXB2E1o9o0Cj2XnXYlaouXKTk4hCHB6C2ncdykOyJng+BoZMxGOVxFjPw58BngfEsacfdqAs/Z3Nmvb23eaKOmvC8EFuxYYJGl+3kZTutwa78bTKfdmoB5zcyx15ucaFrXuQQRb1yHYmrNrngD+KrQDC3spffY94vgfAZuAV4D/pHyGNKdarRY/Ffvkx/1Ttb/3h2OD4Z5qaKcarulfoM2l/vSH/nyqVqs9WqvVHq/Val9q4d44jsiHwZK/T9RqtU824V8cd+RHHdQsJH2Q5gH8IJyLRilO04nsmstBVQRj3p+/QJAwweK8jyGKQdWI/T1IgpjrgI8C30BaP0Q9/8ZI9qMIYU2kn39yyfXXyrWlVMqX+dO/kMY10Xj/Ppi1R3Zsf61W++fs3hwx8tlDrVZrKWUwTDF42B3OOb41CiauNw2B+rD8UlMPMrhOXY0uDBSj3WGSIXaqkAxqFfhHYAvwBdL4e6wNH+8E9UHjgozPIzWnDSTo8ekTG/ZjFeRbr1/gGZeSDlI05K1CzS4UV0ByaSFBqv/eitzS7wI/R1IwN7K99neYEqHnjG+W9HkI+cUebjt2R/zyzv0sKeKrUO6mXQrKk2aDwB5am3EVFHztJGl+H4o7fFyujOft79P2/X6KuaHp0G6ceUBrfry7VZ0oyBkiaVLsTOzUncA1yHc+Ga691OQhftSwgw2uLaNhFAN4sHQGKZe7lT6zqyTGXgV8H7gLab7zZiq020FGzTDemb4e5U62oAxgGW0L37dYhyYpTvdLTa4UUxRxtkKCgmb0E5R22ICEOEya2UPW7hAJuh5BKYlZ4Fqk+VAUfm4r6hg/TJKud/owwrLfAb6VNVIlaXJMsbajpNajaJpf7noXF4Dj7TCta/4UGu9GlD/y+51c0yskaBlFwtqM3EzCNdCCxldIvucQ0uIqwvbzKHEVffKJ7F6QcepCMAPF1MC7gSaQ8k2hCHUgO+8QMowSd6D8zytollxrx6IxHyOzMWUaP4zCbazhIeA2xPTXaRwaO/7tBLqBV0MHLmqVZhmpE0HqBqT5kXrDd0eHA4j5a5B9eCA7P0Tm2eSMrwKfBO6xv7vs+HUIYuJ0beS7b7KH7C/p4LuBfExHkAKto7HidJKWGY+hZN+VwI3hvN9bcGdzxg/Zw9z9mUUJpysoGtV81QYS7GxAufBIU7y7aJqUgu5GY3UGHg/XHSJB78vAGyhzeU04H52On1KZV7PaGvuhPeRWO37U/kam5wsBFSTx+ez84jJ3y0feX1eUOcTIPADKxz2MxjiO+BeDxjNlD8oZ/xAyDqsQc/sQZtcoWuYhUlIoBl270eyIBii6dO90coVyRs+TUg8+lriC5uRjO2v3dJCi34nsGqCe8e1oaoG03nHpLMmNzHG9J3R4HTIwEVp8EKVT7h1GziTH7nk0no7sfH22UXQWwVQNGdkBEr8KfGsjSWIAMf0CgpUhFAxsRH7q3zTorGs/SADnEc57HYp7NTGQuph6lEpoM7/Xf/fTODWQH/f2Yg2OK0c36rfP/KvseGRe2fcxJKhuhBZliz5AfcpgE6lkwqkNYV0r5QxXocDpTdJsidm+fjQbfKUoXwXKmRNXmeKz+1BgdoKi5kXPoR8xbRbh7BApEp+i3u7E1bET9ncG2awrrb1miTYf/xxyO+PyYMFOrA4DcinNkoxjO2L8NCWpzRJqs3a2IXf0VYoL1PmA42IztG6EGzHABTvU4Joo4HyB+hBi1DbgauBX7Xs3slutLOZ0Id7VEC/iPYX7o8avRZI9jqRWsYeuRhJsJZ89btdvsXtvB95vnemytt9r152kvlBoD4Iq19CcXItHKM4ArwIoq0LwxFk3UqpZ+70Vhfhu0+aRom1EmN6JYKPNzrWS9pixNjrtOT6GfK25wPhOe8gUGvw2awSEda344l7DgnW+1wYyg7RgE8WSuzn77QVKL6GyjHHkTZ1Bs83h6TBFz2KAJKQBFHOsQ+7clRQZN4+gYI7E5DX2aUcQW0MKOGnXzdqxVuOQGfu7BqGHw/Px/EJnfMUu9oe/hjTLGdRBa/l0tw/z1nmnVfbpIAVXtfBps89d9jzHSSefvvOIMdN2jTsDnyAVMXnbF0hCm0FMXI1m3hX23csAY+LPBeN9GieVBTbD+DXWVgdS3E8AX0M4XyXM4qjx7fbQdnvAAMk9cj+2GX0NQYkzJLqrtWywbaQZFbXfS/FcW+MMcbydtd+d1j9Xihkk8NMIyl62T4StKsqb7yLVZWLPmCIVxXZYH07YM1pZweq2+y8gxd2NZvBBMsXNGe/THlLENUPrhU++TulMXG2DOQ78L6lodBDh/y4ERxHS2rLvs9bGFML2G22AHTbAk8A3rb9uM3LyaLsPMWEIJbLuIUGNC9YVY9r68AbKPLZCDpmuQFcgza/D+KiRPr1nKFKNNO2juzeApt8D2fUvkgwW1vnXSUwHDf6zwO8B/4ASUrPWn9Wk8us2pJEd1q+vohjjPNKk76MF5/2I8Y1mpYf0ThXgGeDJcKzN2u0iVZ9NIQGUeTT5EmPF7nXhTdv3nZTEFmWa7Ix3gzWFBu8Y51h1BhWMvk4qZe5BDJkiaatje/TZY0xw0AZ2C9K+LqQ5jpWOs09T9IBaiStycgb6fT0IltYjQbudcwVwL6Usu5pXD/RY36eBZ9FMvJu0FFmwETnjHZ+cplFWcgua4rGsbgj4EEqFngkPPmW/r7L7PRbIIz3XgiGK0W8FTc8zYXB5/by3UQnnWzH+uYs6gTyp9dbHVaQVJq82PksSWOyzB4ROXaRc/QjweTQbNyOeFmZNnqtpQ1L3aHMKBUHtiPn+UH/ALMpe+jLbGMpLnybhdqxlzwftmhCn7TDJYOY5EWd6v/UxVnC1qv0VEgN7kPF1Q++up7uXb9l5b/sW4APAPvs9FdrqRK7stLXTj2Y/1CtegSHz9rAOZPQqNqitJHfTNb3bjo0iL8bJG/95lOV0l2xNGLRfFzuS516iB1HG0DIPoxV3r4ycB+7yrkb9nUSpDw/596KIdhNJYYdISrMRxQ5H0CwaQ4bZo/5C/7yBYYqhboxSDyD8nqJ+2eskmqZ7KdJJ67RPXze2w9aJ3Ni4IPLKgCrFGZEnwarIQxqg9frMfBZtt7/uRLQhBTyFtN1pC9LovEZmCPHiZiS0H6Ha0j6Sq7qaTCmixseAxTsYv68luZgxOXUBpQWiFv8YYdutpAj2QVQKEY1SnrSK7mCr0LGYglSfsd52L2lmxoh2CjH9mXBvDyl4O5W114MqEs4B30OI4Yvm7qoWKGK8PzQ3sFUSwzzDFzt/DhnDqMmHkWX3WbQWaUyVhMuENiay31APP3EmuFHzZNgArdXNuHfis6kbpbAdEj12mEPRu89Cz1t12HiPkXYmghyJzaRtQq4MHhXPklUrRMZ/GUk6dq6fhGM/opjY32vfX7LO32vX7rF7DyDmTyPoupnkvTiEYB0sc9dyjY/CyjX8EMLiCFVldBAJaNj69EHSxrYLpEWco6SdKYesr70khRyz/viC/jqkXN+2sXdaX6ZJwirka3JvYxwZiW7qXT4nn14n7ffzaLq+H+2QOEBaYHgezYbt1pmHgS/a/e6ZHCItlizWL88pFlXly3huo9xY3mN980yiB0ynSJFqBQlnGyl9MGrnnLFjyNX+CfAc9duG5pFLWhhb7k6+bsd8xWWC+infi5gfS9iOICP7cTt22B56AC2aj9vxO0jC3EFilGvhUlHcJ3XYPkMkH30fGtdaxHTX5FPIPj1ivysITjaQcjnuXrrC9CGY+R7FtMAw8nLOU1L2mDPeJd1L/XKYk2NYfuw48B5SCsE16+8QTJ2xdvciRsdNZiN5xy6SvM8OabkwD9vz32d98XR1DWnyCPAlu7YfzdQrke2bQJqbj/1G5Ho6zORb70+iUsbC8ZzxP0BSXYMsc+x4lWQgYp3JgA3oW8go3UMKMJw+j2bFKMrY3WvH95FsRT6z3i7FQMkZUkHehyfmPCd0Gm3x/J9w/T3IIfA80Thad/aZPmhtbrL7ckHvs/u8LKaQ0y8r4Ru3467p0Sj4VN1K0SBWkFSfQRpyZzjuwnoK7bB+w45/AWn9foqLG0tF+XbKMcSM662PnjkdAf7b+uG25sMoWIprtu5KuzBH7PpplKx7yI57Pus2BE+lmc2ygibH+e3UM8SlfT58j4L5IvJyzpCK+V1YQ0g4T6JQfDNpZsTtPUtF7v5iffkwmsUbEMNfQ7PwSRLsDaDd4teQjPJZ5D6+TFpGhMSXY+glF7tIJdoTSHCTJMbXLXbnNI6moK9LurfhN8ZEVdlW9D8N11WoT6zNAr+NNORX0KrTp0v6cTGUB33+3PuQpnciZjwL/Hk47z55H2JYF2k17hTJ2ELCar/nZeCXEFztCM9uJ/n1kEFNGeMfQbh1F/JPHVK82L/RviIXgpPPBMfuifC3ihZG2q2zfwJ8B+Fpvt09vj1joXcOOLkb5/HCLyLYXIWg8BvhXC/JT99O0vR2pOkjYYzep5h3mUDKM2l999L0zyBB+IxbcLE7Nv4i0vZrrLN7KK7gV6nf9+T42IyisDzg2okw0bUw4vNiNpDtA14gRdjvRQbu6yhAvJ8EFc6UQbQattV+zyAGvkF51nMs3OtCbkeQOm7HTyPeeqwT90MB5Vvq3Xjci6bnt4FfQNHXp7PrYmDVCtPde9mFgrR8PTSSX9eBbIoLwDXVg5cYrDRqqx/ZlP3Z8YdIS4lz9pzTSPHya3OqovWIHQiWRknp8UFrc3+4NtbwNHyXwYAN+F5kgD5mD3gauZz+6pHI/EGa++PbqC9r6yKVb7jwygbtzC0MIDsPaUGG0G68foBkZDcjD+ccMoJnEawdDNfnTPN+3I6cgl7kTDyPYDpXyNi/n/ajEdRMk2q/J1BgtItkUHahSO0ECXcP0lzrp7OOuXZ0kvxgz7f41HeI66Me3z27CeVleVj/9iBN7kGQtpWEyS8gSPAAKo9duijCqlcPuLsJSXBQTJ3HmVhQlpzxu0k+L6ScyuNo9WU72oa4Awng3yiv3mpEnkncS3rfmBcf7UDexmbSrNhjfz1FEQXrg4rCiIJw2oFs1VUI2s4j/HZ4eJYiZkfNLDu+09pbR1og9zIY7G80xKWUMz5uFHPNXG+Dfg7lNnYiaXtx0lbKM4aNKN9+uRvNoM3Ar4cBPEbaxBszkxFyypJ3oNz/h5B3No0WZc6jCPME9cbRydstoz5knK9GicQu5M2cRDGBK2v0ghrB4oLGNTecfcAfIEFsQTUjbyFs+yZ6D0wzqOkLHYsFplVUsfAbSAATyNidQxo5jrTqnD23DTF0EmnyNQizbyJtJvDtQ08h985dQB9Lq4riwulCLvZGe1Y7UtTnSTYvzpYy56OpcW1EVeBzSMu7kFEZR17AUZSviQGTa4/jXC6YMmP5l2jlagMSsufB3yLlVpy84mu1fT+GBDKKsqJfpfhKxajpZVgehZHHErtQnsf9fK9QOEx9yUpTWizj96GXJvw1KSR+CXkCnchfjrmJRgPJKZ4bDMfvRu9E2GLtRyaDmHwWQclZ4DeRXfB3m7mw3TBHapVJVVTyt4NUG3kWpVaOUP/uypZosYz3xh9G9eNbkHvpZXZvIGh4LFy/y75HF62s3YVcRfemfNvnrF17jpTAyl2+OOWh3uOJ+F42E/oRhF1tfz2NPI5mVjTKi6bFMj4u130ODWoTkvwppGmn0FR/lfpXDcbB5kx2GBomvaBzkuZeU8RgbzuPLuOCupPDi1/vzwZBy62I4VcgqJtBWn6KItPrgqNW6O28DM6TT7+MDNpRUkncaevgMWTxoR52nHKszbXII9Vu5HP3kHzlZlW8eUTbrPbGBX4dadNCDdmX08gripUQjWZTU7oYxse8zSDp3VzzSPKzpNrHE8gGvExjqGlk6MqSYXEjQn68m6I77NnAqI2NDKz76buR1+JrpeNo9o5a2yMlfboouhivZgj4XbSk57/7gd9HPu0O0ks3XyGtPM0j7X+Ncu1fyPC6lpctZrcyzaukEu14DCTkG1E6o5e09WiU+pxNo5m6aHo7UOPMh6SJH0Vu4M2kl0lMImwcQZ19HWU8ywxhTJ/mM6GVXI27dX3IC8pnRyONfxBVSswhj+UISUi+ghYDv5gXWjS+w9K/8NNXlG5DwcYOxIALpJfp/BgZp9PIAHuZXB5sQD3jF0qORW+kDMedgWVQ5UL9AMrf/xPFxfiLrctsSGULIW+HXkGMPkLasbEdab5Xat2NotQX0VrlTqRlkRllDG4kBNdyKJadePLOjWvUWM8BvYAgZjNa3P415BL7nqdO6lMcS0KX6hW3buwqKH16A4pCO9HU9MIgD/vfRJ7Da3YstwPQeoASXd5Ig/bsHUib9yDl8MKqjchGPYXy9FHLl1wIS63xTr5N8rNogB9BeZSrkV+8kZSP6SWt5vfZ35tRZdo0CpJG0KD3UJ/kijRMccHD9816LdDtCNr+FvnoNyCv7Jy1+xW0NQiKybNmy42LpqXW+L3UewGeY78JDfwOxPhJNKBRpO1xK+YMYtgcqfDTNysco/nqkOP5tD3zFhTo3UJ60UU3KQIeQ0uDP0RGNbrM96Po/B3NeKgPKqrZ91sQzr8H5eHHSbi6Cmng1cgmTJL2p66hmKX0vUoXSLsMXwX+2J7lUPEYCvS67dpJ0ibiUXv2V0hv2Yaih+SUr569LbpUUNNH6rynfSFt42lHke61CHOvRG7mSQQBa9Gs8P759sVrSbkaJy/D8N2FAH+PPKvfQkazFzHa99C+hpj+HeAP7R5fpRqzvm9Ds3ChHNNF01JrfJyiHurHGpyYL3HB7CXtpniOxPz7UJXAtUjbZ+y+uHPFf/um4DkEHaeQMdxKeuPUGdKCxQvAv1NM53pCzxkd8/a+qWLJ6J32v/5yz+VTSGNvQkzwfUq+kcDJC0/9mMPIcQQlo4jhEU6Wlf4PS98eUmEAOcsAAAAASUVORK5CYII=') no-repeat center center;
+    }
+
+    .small-button-background{
+      width:86px;height:84px;
+      margin-top:3px;margin-left:3px;
+      position:absolute;
+      /* dark outer ring — exactly how original looks */
+      box-shadow: 0 0 0 5px #1a1a1a, 0 4px 8px rgba(0,0,0,0.5);
+    }
+    .circle{border-radius:50%}
+
+    .small-button-shadow{
+      width:94px;height:89px;
+      margin-bottom:5px;
+      border-radius:50%;
+      background:radial-gradient(ellipse 70% 30% at 50% 92%, rgba(0,0,0,0.4) 0%, transparent 70%);
+    }
+
+    .instant-link{font-size:14px;text-decoration:underline;display:block;line-height:1.4em;height:2.8em;overflow:hidden;color:#333}
+    .instant-link:hover{color:#000}
+    .result-page-instant-sharebox{margin:5px 0 0;display:flex;justify-content:center;gap:4px}
+    .instant-action-button{padding:0;background:none;border:0;cursor:pointer}
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">soundboard</div>
+  <button class="stop-btn" onclick="stopAll()">&#9632; Stop All</button>
+</header>
+<div id="instants_container">
+  <div class="instants">
+    <div class="instant" data-src="sounds/1.m4a">
+      <div class="small-button-background circle" style="background-color:#ffff33;"></div>
+      <div class="small-button-shadow"></div>
+      <button class="small-button" type="button"></button>
+      <a class="instant-link link-secondary">Mona Arnoff</a>
+      <div class="result-page-instant-sharebox" style="margin-top:8px">
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#dc3545"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" fill="#2bb5c7"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="#2bb5c7"/></svg></button>
+      </div>
+    </div>
+    <div class="instant" data-src="sounds/2.m4a">
+      <div class="small-button-background circle" style="background-color:#33cc33;"></div>
+      <div class="small-button-shadow"></div>
+      <button class="small-button" type="button"></button>
+      <a class="instant-link link-secondary">I Want One</a>
+      <div class="result-page-instant-sharebox" style="margin-top:8px">
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#dc3545"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" fill="#2bb5c7"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="#2bb5c7"/></svg></button>
+      </div>
+    </div>
+    <div class="instant" data-src="sounds/3.m4a">
+      <div class="small-button-background circle" style="background-color:#ff3333;"></div>
+      <div class="small-button-shadow"></div>
+      <button class="small-button" type="button"></button>
+      <a class="instant-link link-secondary">OhhhK</a>
+      <div class="result-page-instant-sharebox" style="margin-top:8px">
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#dc3545"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" fill="#2bb5c7"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="#2bb5c7"/></svg></button>
+      </div>
+    </div>
+    <div class="instant" data-src="sounds/4.m4a">
+      <div class="small-button-background circle" style="background-color:#3355ff;"></div>
+      <div class="small-button-shadow"></div>
+      <button class="small-button" type="button"></button>
+      <a class="instant-link link-secondary">Little Buddy</a>
+      <div class="result-page-instant-sharebox" style="margin-top:8px">
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#dc3545"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" fill="#2bb5c7"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="#2bb5c7"/></svg></button>
+      </div>
+    </div>
+    <div class="instant" data-src="sounds/5.m4a">
+      <div class="small-button-background circle" style="background-color:#cc33cc;"></div>
+      <div class="small-button-shadow"></div>
+      <button class="small-button" type="button"></button>
+      <a class="instant-link link-secondary">Little Girl</a>
+      <div class="result-page-instant-sharebox" style="margin-top:8px">
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#dc3545"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" fill="#2bb5c7"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="#2bb5c7"/></svg></button>
+      </div>
+    </div>
+    <div class="instant" data-src="sounds/6.m4a">
+      <div class="small-button-background circle" style="background-color:#ff9900;"></div>
+      <div class="small-button-shadow"></div>
+      <button class="small-button" type="button"></button>
+      <a class="instant-link link-secondary">OMG</a>
+      <div class="result-page-instant-sharebox" style="margin-top:8px">
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#dc3545"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" fill="#2bb5c7"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="#2bb5c7"/></svg></button>
+      </div>
+    </div>
+    <div class="instant" data-src="sounds/7.m4a">
+      <div class="small-button-background circle" style="background-color:#33cccc;"></div>
+      <div class="small-button-shadow"></div>
+      <button class="small-button" type="button"></button>
+      <a class="instant-link link-secondary">Sir Pounce</a>
+      <div class="result-page-instant-sharebox" style="margin-top:8px">
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#dc3545"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" fill="#2bb5c7"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="#2bb5c7"/></svg></button>
+      </div>
+    </div>
+    <div class="instant" data-src="sounds/8.m4a">
+      <div class="small-button-background circle" style="background-color:#ff66aa;"></div>
+      <div class="small-button-shadow"></div>
+      <button class="small-button" type="button"></button>
+      <a class="instant-link link-secondary">Team Sports</a>
+      <div class="result-page-instant-sharebox" style="margin-top:8px">
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#dc3545"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" fill="#2bb5c7"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="#2bb5c7"/></svg></button>
+      </div>
+    </div>
+    <div class="instant" data-src="sounds/9.m4a">
+      <div class="small-button-background circle" style="background-color:#99cc00;"></div>
+      <div class="small-button-shadow"></div>
+      <button class="small-button" type="button"></button>
+      <a class="instant-link link-secondary">That's Gay</a>
+      <div class="result-page-instant-sharebox" style="margin-top:8px">
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#dc3545"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" fill="#2bb5c7"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="#2bb5c7"/></svg></button>
+      </div>
+    </div>
+    <div class="instant" data-src="sounds/10.m4a">
+      <div class="small-button-background circle" style="background-color:#ff6633;"></div>
+      <div class="small-button-shadow"></div>
+      <button class="small-button" type="button"></button>
+      <a class="instant-link link-secondary">Uncle Robert</a>
+      <div class="result-page-instant-sharebox" style="margin-top:8px">
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#dc3545"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" fill="#2bb5c7"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="#2bb5c7"/></svg></button>
+      </div>
+    </div>
+    <div class="instant" data-src="sounds/11.m4a">
+      <div class="small-button-background circle" style="background-color:#9933ff;"></div>
+      <div class="small-button-shadow"></div>
+      <button class="small-button" type="button"></button>
+      <a class="instant-link link-secondary">Nope</a>
+      <div class="result-page-instant-sharebox" style="margin-top:8px">
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#dc3545"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" fill="#2bb5c7"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="#2bb5c7"/></svg></button>
+      </div>
+    </div>
+    <div class="instant" data-src="sounds/12.m4a">
+      <div class="small-button-background circle" style="background-color:#999999;"></div>
+      <div class="small-button-shadow"></div>
+      <button class="small-button" type="button"></button>
+      <a class="instant-link link-secondary">Applause</a>
+      <div class="result-page-instant-sharebox" style="margin-top:8px">
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#dc3545"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" fill="#2bb5c7"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="#2bb5c7"/></svg></button>
+      </div>
+    </div>
+    <div class="instant" data-src="sounds/13.m4a">
+      <div class="small-button-background circle" style="background-color:#cc0000;"></div>
+      <div class="small-button-shadow"></div>
+      <button class="small-button" type="button"></button>
+      <a class="instant-link link-secondary">Ba Dum Tss</a>
+      <div class="result-page-instant-sharebox" style="margin-top:8px">
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#dc3545"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" fill="#2bb5c7"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="#2bb5c7"/></svg></button>
+      </div>
+    </div>
+    <div class="instant" data-src="sounds/14.m4a">
+      <div class="small-button-background circle" style="background-color:#ff99cc;"></div>
+      <div class="small-button-shadow"></div>
+      <button class="small-button" type="button"></button>
+      <a class="instant-link link-secondary">Evil Laugh</a>
+      <div class="result-page-instant-sharebox" style="margin-top:8px">
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#dc3545"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" fill="#2bb5c7"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="#2bb5c7"/></svg></button>
+      </div>
+    </div>
+    <div class="instant" data-src="sounds/15.m4a">
+      <div class="small-button-background circle" style="background-color:#00ccff;"></div>
+      <div class="small-button-shadow"></div>
+      <button class="small-button" type="button"></button>
+      <a class="instant-link link-secondary">Quack</a>
+      <div class="result-page-instant-sharebox" style="margin-top:8px">
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#dc3545"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" fill="#2bb5c7"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="#2bb5c7"/></svg></button>
+      </div>
+    </div>
+    <div class="instant" data-src="sounds/16.m4a">
+      <div class="small-button-background circle" style="background-color:#ffcc00;"></div>
+      <div class="small-button-shadow"></div>
+      <button class="small-button" type="button"></button>
+      <a class="instant-link link-secondary">Nom Nom</a>
+      <div class="result-page-instant-sharebox" style="margin-top:8px">
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#dc3545"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" fill="#2bb5c7"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="#2bb5c7"/></svg></button>
+      </div>
+    </div>
+    <div class="instant" data-src="sounds/17.m4a">
+      <div class="small-button-background circle" style="background-color:#bb0000;"></div>
+      <div class="small-button-shadow"></div>
+      <button class="small-button" type="button"></button>
+      <a class="instant-link link-secondary">Dramatic</a>
+      <div class="result-page-instant-sharebox" style="margin-top:8px">
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#dc3545"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" fill="#2bb5c7"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="#2bb5c7"/></svg></button>
+      </div>
+    </div>
+    <div class="instant" data-src="sounds/18.m4a">
+      <div class="small-button-background circle" style="background-color:#0099ff;"></div>
+      <div class="small-button-shadow"></div>
+      <button class="small-button" type="button"></button>
+      <a class="instant-link link-secondary">Dial Up</a>
+      <div class="result-page-instant-sharebox" style="margin-top:8px">
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#dc3545"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" fill="#2bb5c7"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="#2bb5c7"/></svg></button>
+      </div>
+    </div>
+    <div class="instant" data-src="sounds/19.m4a">
+      <div class="small-button-background circle" style="background-color:#66ff33;"></div>
+      <div class="small-button-shadow"></div>
+      <button class="small-button" type="button"></button>
+      <a class="instant-link link-secondary">Sad Violin</a>
+      <div class="result-page-instant-sharebox" style="margin-top:8px">
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#dc3545"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" fill="#2bb5c7"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="#2bb5c7"/></svg></button>
+      </div>
+    </div>
+    <div class="instant" data-src="sounds/20.m4a">
+      <div class="small-button-background circle" style="background-color:#ff3399;"></div>
+      <div class="small-button-shadow"></div>
+      <button class="small-button" type="button"></button>
+      <a class="instant-link link-secondary">The Price</a>
+      <div class="result-page-instant-sharebox" style="margin-top:8px">
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#dc3545"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" fill="#2bb5c7"/></svg></button>
+        <button type="button" class="instant-action-button" onclick="event.stopPropagation()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="#2bb5c7"/></svg></button>
+      </div>
+    </div></div>
+</div>
+<script>
+  const audios = {};
+
+  document.querySelectorAll('.instant').forEach((instant, i) => {
+    const src = instant.dataset.src;
+    const audio = new Audio(src);
+    audio.preload = 'auto';
+    audios[i] = audio;
+
+    audio.addEventListener('ended', () => instant.classList.remove('playing'));
+
+    function toggle() {
+      if (!audio.paused) {
+        audio.pause(); audio.currentTime = 0;
+        instant.classList.remove('playing');
+      } else {
+        audio.currentTime = 0;
+        audio.play().catch(()=>{});
+        instant.classList.add('playing');
+      }
+    }
+
+    instant.querySelector('.small-button').addEventListener('click', toggle);
+    instant.querySelector('.instant-link').addEventListener('click', toggle);
+  });
+
+  function stopAll() {
+    Object.values(audios).forEach(a => { a.pause(); a.currentTime = 0; });
+    document.querySelectorAll('.instant').forEach(el => el.classList.remove('playing'));
+  }
+</script>
+</body>
+</html>
